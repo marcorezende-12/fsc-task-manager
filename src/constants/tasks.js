@@ -1,0 +1,48 @@
+const TASKS = [
+  {
+    id: 1,
+    title: "Estudar FSC ",
+    description: "Estudar para a prova de FSC",
+    time: "morning",
+    status: "done",
+  },
+  {
+    id: 2,
+    title: "Ler livro ",
+    description: "Ler o livro de matemática",
+    time: "morning",
+    status: "in_progress",
+  },
+  {
+    id: 3,
+    title: "Treinar",
+    description: "Academia",
+    time: "afternoon",
+    status: "done",
+  },
+
+  {
+    id: 4,
+    title: "Fazer café",
+    description: "Coffee date",
+    time: "afternoon",
+    status: "in_progress",
+  },
+
+  {
+    id: 5,
+    title: "Fazer compras",
+    description: "Mercado",
+    time: "evening",
+    status: "not_started",
+  },
+  {
+    id: 6,
+    title: "Ver filme",
+    description: "Filme",
+    time: "evening",
+    status: "not_started",
+  },
+]
+
+export default TASKS
