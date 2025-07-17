@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toast } from "sonner"
 
 import AddIcon from "../assets/icons/add.svg?react"
 import CloudSunIcon from "../assets/icons/cloud-sun.svg?react"
@@ -20,6 +21,7 @@ const Tasks = () => {
   const handleTaskDeleteClick = (taskId) => {
     const newTasks = tasks.filter((task) => task.id != taskId)
     setTasks(newTasks)
+    toast.success("Tarefa deletada com sucesso!")
   }
 
   const handleTaskCheckboxClick = (taskId) => {
@@ -31,14 +33,17 @@ const Tasks = () => {
       // se passar desse "if", então eu preciso atualizar a tarefa
 
       if (task.status === "not_started") {
+        toast.success("Tarefa iniciada com sucesso!")
         return { ...task, status: "in_progress" }
       }
 
       if (task.status === "in_progress") {
+        toast.success("Tarefa concluída!")
         return { ...task, status: "done" }
       }
 
       if (task.status === "done") {
+        toast.success("Tarefa reiniciada com sucesso!")
         return { ...task, status: "not_started" }
       }
 
