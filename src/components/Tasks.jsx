@@ -11,11 +11,36 @@ import TaskItem from "./TaskItem.jsx"
 import TasksSeparator from "./TasksSeparator.jsx"
 
 const Tasks = () => {
-  const [tasks] = useState(TASKS)
+  const [tasks, setTasks] = useState(TASKS) // a segunda função, no caso setTasks é usada para alterar o estado da primeira lista
 
   const morningTasks = tasks.filter((task) => task.time === "morning")
   const afternoonTasks = tasks.filter((task) => task.time === "afternoon")
   const eveningTasks = tasks.filter((task) => task.time === "evening")
+
+  const handleTaskCheckboxClick = (taskId) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id != taskId) {
+        return task
+      }
+
+      // se passar desse "if", então eu preciso atualizar a tarefa
+
+      if (task.status === "not_started") {
+        return { ...task, status: "in_progress" }
+      }
+
+      if (task.status === "in_progress") {
+        return { ...task, status: "done" }
+      }
+
+      if (task.status === "done") {
+        return { ...task, status: "not_started" }
+      }
+
+      return task
+    })
+    setTasks(newTasks)
+  }
 
   return (
     <div className="w-full px-8 py-16">
@@ -48,7 +73,11 @@ const Tasks = () => {
 
           {/* TAREFAS DA MANHÃ */}
           {morningTasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleTaskCheckboxClick={handleTaskCheckboxClick}
+            />
           ))}
         </div>
 
@@ -58,7 +87,11 @@ const Tasks = () => {
 
           {/* TAREFAS DA TARDE */}
           {afternoonTasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleTaskCheckboxClick={handleTaskCheckboxClick}
+            />
           ))}
         </div>
 
@@ -68,7 +101,11 @@ const Tasks = () => {
 
           {/* TAREFAS DA NOITE */}
           {eveningTasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleTaskCheckboxClick={handleTaskCheckboxClick}
+            />
           ))}
         </div>
       </div>
