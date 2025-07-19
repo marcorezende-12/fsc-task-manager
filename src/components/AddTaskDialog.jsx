@@ -10,21 +10,27 @@ import Input from "./Input"
 import TimeSelect from "./TimeSelect"
 
 const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
-  const [title, setTitle] = useState()
+  const [title, setTitle] = useState("")
   const [time, setTime] = useState("morning")
-  const [description, setDescription] = useState()
+  const [description, setDescription] = useState("")
 
   const nodeRef = useRef()
 
+  // Resetar campos ao abrir/fechar o dialog
   useEffect(() => {
     if (!isOpen) {
       setTitle("")
-      setTime("")
+      setTime("morning")
       setDescription("")
     }
   }, [isOpen])
 
+  // Função para salvar tarefa
   const handleSaveClick = () => {
+    if (!title.trim() || !time.trim() || !description.trim()) {
+      return alert("Preencha todos os campos!")
+    }
+
     handleSubmit({
       id: v4(),
       title,
@@ -61,7 +67,7 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
 
               <div className="flex w-[336px] flex-col space-y-4">
                 <Input
-                  id="title "
+                  id="title"
                   label="Título"
                   placeholder="Insira o título da tarefa"
                   value={title}
@@ -77,15 +83,16 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
                   id="description"
                   label="Descrição"
                   placeholder="Descreva a tarefa"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
                 />
+
                 <div className="flex gap-3">
                   <Button
                     size="large"
                     className="w-full"
                     variant="secondary"
                     onClick={handleClose}
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
                   >
                     Cancelar
                   </Button>
