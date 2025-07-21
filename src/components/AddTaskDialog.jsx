@@ -110,7 +110,7 @@ const AddTaskDialog = ({ isOpen, handleClose, handleSubmit }) => {
                 <TimeSelect
                   value={time}
                   onChange={(event) => setTime(event.target.value)}
-                  errorMessage={timeError.message}
+                  errorMessage={timeError?.message}
                 />
 
                 <Input
