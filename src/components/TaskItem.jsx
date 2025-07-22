@@ -1,25 +1,72 @@
-import { CheckIcon, DetailsIcon, LoaderIcon, TrashIcon } from "../assets/icons"
-import Button from "./Button"
+import PropTypes from "prop-types"
+import { Link } from "react-router-dom"
+import { toast } from "sonner"
 
-const TaskItem = ({ task, handleCheckboxClick, handleDeleteClick }) => {
+import { CheckIcon, DetailsIcon, LoaderIcon, TrashIcon } from "../assets/icons"
+import Button from "../components/Button"
+import { useDeleteTask } from "../hooks/data/use-delete-task"
+import { useUpdateTask } from "../hooks/data/use-update-task"
+
+const TaskItem = ({ task }) => {
+  const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useDeleteTask(
+    task.id
+  )
+  const { mutate } = useUpdateTask(task.id)
+
   const getStatusClasses = () => {
     if (task.status === "done") {
-      // aqui eu deixo os estilos que são específicos em cada status
-      return "bg-brand-primary text-brand-primary  "
+      return "bg-brand-primary text-brand-primary"
     }
 
     if (task.status === "in_progress") {
-      return "bg-brand-process text-brand-process  "
+      return "bg-brand-process text-brand-process"
     }
 
     if (task.status === "not_started") {
-      return "bg-brand-dark-blue bg-opacity-10 text-brand-dark-blue "
+      return "bg-brand-dark-blue bg-opacity-5 text-brand-dark-blue"
     }
+  }
+
+  const handleDeleteClick = () => {
+    deleteTask(undefined, {
+      onSuccess: () => {
+        toast.success("Tarefa excluída com sucesso!")
+      },
+      onError: () => {
+        toast.error("Erro ao excluir tarefa. Por favor, tente novamente.")
+      },
+    })
+  }
+
+  const getNewStatus = () => {
+    if (task.status === "not_started") {
+      return "in_progress"
+    }
+    if (task.status === "in_progress") {
+      return "done"
+    }
+    return "not_started"
+  }
+
+  const handleCheckboxClick = () => {
+    mutate(
+      {
+        status: getNewStatus(),
+      },
+      {
+        onSuccess: () =>
+          toast.success("Status da tarefa atualizado com sucesso!"),
+        onError: () =>
+          toast.error(
+            "Erro ao atualizar status da tarefa. Por favor, tente novamente."
+          ),
+      }
+    )
   }
 
   return (
     <div
-      className={`flex items-center justify-between gap-2 rounded-lg bg-opacity-10 px-4 py-3 text-sm transition ${getStatusClasses()}`} // aqui eu deixo os estilos que são comuns em todos os itens
+      className={`flex items-center justify-between gap-2 rounded-lg bg-opacity-10 px-4 py-3 text-sm transition ${getStatusClasses()}`}
     >
       <div className="flex items-center gap-2">
         <label
@@ -29,11 +76,11 @@ const TaskItem = ({ task, handleCheckboxClick, handleDeleteClick }) => {
             type="checkbox"
             checked={task.status === "done"}
             className="absolute h-full w-full cursor-pointer opacity-0"
-            onChange={() => handleCheckboxClick(task.id)}
+            onChange={handleCheckboxClick}
           />
           {task.status === "done" && <CheckIcon />}
           {task.status === "in_progress" && (
-            <LoaderIcon className="animate-spin" />
+            <LoaderIcon className="animate-spin text-brand-white" />
           )}
         </label>
 
@@ -41,15 +88,36 @@ const TaskItem = ({ task, handleCheckboxClick, handleDeleteClick }) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" onClick={() => handleDeleteClick(task.id)}>
-          <TrashIcon className="text-brand-text-gray" />
+        <Button
+          color="ghost"
+          onClick={handleDeleteClick}
+          disabled={deleteTaskIsLoading}
+        >
+          {deleteTaskIsLoading ? (
+            <LoaderIcon className="animate-spin text-brand-text-gray" />
+          ) : (
+            <TrashIcon className="text-brand-text-gray" />
+          )}
         </Button>
-        <a href="#" className="transition hover:opacity-75">
+
+        <Link to={`/task/${task.id}`}>
           <DetailsIcon />
-        </a>
+        </Link>
       </div>
     </div>
   )
+}
+
+TaskItem.propTypes = {
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    time: PropTypes.oneOf(["morning", "afternoon", "evening"]).isRequired,
+    status: PropTypes.oneOf(["not_started", "in_progress", "done"]).isRequired,
+  }).isRequired,
+  handleCheckboxClick: PropTypes.func.isRequired,
+  handleDeleteClick: PropTypes.func.isRequired,
 }
 
 export default TaskItem

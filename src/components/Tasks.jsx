@@ -25,7 +25,7 @@ const Tasks = () => {
       })
       const tasks = await response.json()
 
-      // após pegar os dados da API, atuzliar o meu state "tasks"
+      // após pegar os dados da API, atualizar o meu state "tasks"
       setTasks(tasks)
     }
 
